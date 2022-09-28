@@ -248,30 +248,22 @@ public class Juego {
             }
         }
 
-        // verificar si podemos ingresar en la cabeza cuando este lleno
-
-//        if(indiceFilaColumna == MAX_FILAS-1){
-//            System.out.println(indiceFilaColumna);
-//            tablero[indiceFilaColumna][col] = sig+"";
-//            sig = subSig;
-//            subSig = generarNumero();
-//        } else {
-//            tablero[indiceFilaColumna][col] = sig+"";
-//            sig = subSig;
-//            subSig = generarNumero();
-//        }
-        tablero[indiceFilaColumna][col] = sig+"";
-        sig = subSig;
-        subSig = generarNumero();
-
-        indiceFilaColumna = indicefilaDeUnaColumna(col);
-        if(!tipoSimplificacion(indiceFilaColumna+1, col).equals(TipoDeSimplificacion.NONE)) {
-            System.out.println("Movimiento = " + simplificar(indiceFilaColumna+1, col));
-
+        if(indiceFilaColumna == -1 && tablero[indiceFilaColumna+1][col].equals(sig+"")){
+            tablero[indiceFilaColumna+1][col] = (Integer.parseInt(tablero[indiceFilaColumna+1][col]) +sig)+"";
+            sig = subSig;
+            subSig = generarNumero();
+        } else {
+            tablero[indiceFilaColumna][col] = sig+"";
             sig = subSig;
             subSig = generarNumero();
         }
 
+        indiceFilaColumna = indicefilaDeUnaColumna(col);
+        if(!tipoSimplificacion(indiceFilaColumna+1, col).equals(TipoDeSimplificacion.NONE)) {
+            System.out.println("Movimiento = " + simplificar(indiceFilaColumna+1, col));
+            sig = subSig;
+            subSig = generarNumero();
+        }
         return estado;
     }
 
