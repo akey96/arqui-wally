@@ -17,38 +17,50 @@ public class UI {
     public void jugar(){
         Scanner teclado = new Scanner(System.in);
 
-        while (true) {
+        do {
             imprimirEstado();
             int ficha = juego.getSig();
             System.out.println("Ingrese la columna a donde quisiera ingresar la ficha: "+ ficha );
             int columna = teclado.nextInt();
             try {
                 EstadoJuego estadoJuego = juego.aniadirColumna(columna);
-                System.out.println(estadoJuego);
-                if (estadoJuego.equals(EstadoJuego.ganado)){
-                    System.out.println("GANO EL JUEGOOOO!!!!!");
+//                imprimirEstado();
+//                System.out.println(estadoJuego);
+                int[] indices = juego.indiceSimplificar();
+                while (indices[0] != -1 && indices[1] != -1) {
                     imprimirEstado();
-                    break;
-                } else if (estadoJuego.equals(EstadoJuego.perdido)) {
-                    System.out.println("Juego terminado, ya no puedes insertar la ficha en ninguna columna!!");
+                    System.out.println(juego.simplificar(indices[0], indices[1]));
+//                    imprimirEstado();
+                    indices = juego.indiceSimplificar();
                 }
+
             } catch (ColumnaInvalidaException | SinEspacioColumnaException e) {
                 System.out.println(e.getMessage());
             }
 
+        } while(juego.getEstado().equals(EstadoJuego.enJuego) || juego.getEstado().equals(EstadoJuego.perdido));
+
+        if (juego.getEstado().equals(EstadoJuego.ganado)){
+            imprimirEstado();
+            System.out.println("GANO EL JUEGOOOO!!!!!");
+//
+        } else if (juego.getEstado().equals(EstadoJuego.perdido)) {
+            System.out.println("Juego terminado, ya no puedes insertar la ficha en ninguna columna!!");
         }
+
     }
 
     public void imprimirEstado(){
-        System.out.println("############################## JUEGO EXPONENTES #################################\n");
+
         this.imprimirFichas();
         System.out.println("\n");
         this.imprimirTablero();
+        System.out.println("############################## JUEGO EXPONENTES #################################\n");
     }
 
     public void imprimirFichas(){
         System.out.print("Fichas: ");
-        System.out.print(juego.getSubSig() +", "+ juego.getSig());
+        System.out.print("SubSig = " + juego.getSubSig() +", Sig = "+ juego.getSig());
     }
 
     public void imprimirTablero(){
@@ -56,13 +68,10 @@ public class UI {
         for(int i = 0; i< 6; i++) {
             for(int j = 0; j< 5; j++) {
                 try {
-//                    String entrada = tablero[j][((tablero[j].length - i - 1) + (juego.MAX_COLUMNAS - tablero[j].length))];
-//                    String s = tablero[j][((tablero[j].length - i - 1) + (juego.MAX_COLUMNAS - tablero[j].length))];
                     String s = tablero[i][j];
-                    String formato = "   *|";
-                    if(!s.equals("")){
+                    String formato = "    |";
+                    if(!s.equals(" ")){
                         formato = String.format("%4d|", Integer.parseInt(s));
-//                        System.out.println("fila="+j+"  , col="+j );
                     }
                     System.out.print(formato);
                 } catch (ArrayIndexOutOfBoundsException e){
@@ -71,10 +80,8 @@ public class UI {
             }
             System.out.println();
         }
-        System.out.println("-------------------------------");
+        System.out.println("----------------------------");
         String formato = String.format("%4d|%4d|%4d|%4d|%4d|",0,1,2,3,4);
         System.out.println(formato);
     }
-
-
 }

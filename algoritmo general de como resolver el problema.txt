@@ -1,0 +1,21 @@
+
+
+
+1.  Mostrar estado Juego
+2.  hacer
+3. 	    leer elemento columna
+4. 	    Si no esta en el rango de las columnas
+5.  		Lanzar excepcion ColumnaInvalidaException
+6. 	    Si se verifica que no se puede ingresar mas a una columna y simplificar
+7.	    	Lanzar Excepcion SinEspacioColumnaException
+8.	    aniadir el elmento al tablero
+9.	    Mientras (Se pueda simplicar tomando en cuenta cada escesario, tomando en cuenta la prioridad)
+10.	    	Simplificar
+11.	    	Setear el estado de juego, despues de cada simplificacion
+12.	    	Mostrar el estado del juego
+13. Mientras(EstadoJuego sea en juego)
+14. Si (EstadoJuego sea ganado)
+15.	    Mostrar ganaste el juego
+16. Si (Estado de juego es perdido)
+17	    Mostrar perdiste el juego
+	

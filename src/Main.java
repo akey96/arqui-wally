@@ -6,10 +6,12 @@ public class Main {
         Juego juego;
         UI ui;
 
-        String escenario1 = "";
-        int siguiente1 = 1;
 
-        juego = new Juego();
+
+        String escenario1 = "2;4;8;16;32. ; ; ; ; . ; ; ; ; . ; ; ; ; . ; ; ; ; . ; ; ; ; .";
+        int siguiente = 4;
+
+        juego = new Juego(escenario1, siguiente);
         ui = new UI(juego);
         ui.jugar();
 

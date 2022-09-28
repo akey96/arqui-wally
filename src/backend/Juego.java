@@ -13,14 +13,23 @@ public class Juego {
     public Juego(){
         tablero = new String[MAX_FILAS][MAX_COLUMNAS];
         for (String[] strings : tablero) {
-            Arrays.fill(strings, "");
+            Arrays.fill(strings, " ");
         }
         sig = generarNumero();
         subSig = generarNumero();
     }
 
     public Juego(String juego, int siguiente) {
-
+        tablero = new String[MAX_FILAS][MAX_COLUMNAS];
+        String[] filas = juego.split("\\.");
+        for (int i = filas.length-1; i >=0 ; i--) {
+            String[] columnas = filas[filas.length-i-1].split(";");
+            for (int j = 0; j < columnas.length; j++) {
+                tablero[i][j] = columnas[j];
+            }
+        }
+        sig = siguiente;
+        subSig = generarNumero();
     }
 
     public String[][] estadoTablero(){
@@ -37,16 +46,42 @@ public class Juego {
         return estado;
     }
 
+    public boolean gano(){
+        boolean bandera = false;
+        for (int i = 0; i < MAX_FILAS; i++) {
+            for (int j = 0; j < MAX_COLUMNAS; j++) {
+                if(tablero[i][j].equals("256")){
+                    bandera = true;
+                }
+            }
+        }
+        return bandera;
+    }
+
     private int indicefilaDeUnaColumna(int col){
         int indice = -1;
         for(int i=MAX_FILAS-1; i>=0; i-- ) {
-
-            if(tablero[i][col].equals("")) {
+            if(tablero[i][col].equals(" ")) {
                 indice = i;
                 break;
             }
         }
         return indice;
+    }
+
+    public int[] indiceSimplificar(){
+        int[] indices = new int[] {-1, -1};
+
+        for (int i = 0; i < MAX_FILAS; i++) {
+            for (int j = 0; j < MAX_COLUMNAS; j++) {
+                TipoDeSimplificacion tp = tipoSimplificacion(i, j);
+                if(!tp.equals(TipoDeSimplificacion.NONE)){
+                      indices[0] = i;
+                      indices[1] = j;
+                }
+            }
+        }
+        return indices;
     }
 
     public boolean estaDisponibleAlgunaColumna(){
@@ -60,101 +95,200 @@ public class Juego {
         return estaDisponible;
     }
 
-//    public boolean estaDisponibleUnaColumna(int elemento, int columna){
-//        boolean estaDisponible = false;
-//
-//        if(tablero[columna].peek() == elemento) {
-//            estaDisponible = true;
-//        }
-//
-//        return estaDisponible;
-//    }
+    public TipoDeSimplificacion tipoSimplificacion(int fila, int col){
+
+        TipoDeSimplificacion tipoDeSimplificacion = TipoDeSimplificacion.NONE;
+
+        if (tablero[fila][col].equals(" ")) {
+            return tipoDeSimplificacion;
+        }
+
+        if(((col+1<MAX_COLUMNAS) && ((col-1>=0) && (fila+1<MAX_FILAS)) ) && (((tablero[fila][col].equals(tablero[fila][col+1])) &&
+                (tablero[fila][col+1].equals(tablero[fila][col-1])))) && (tablero[fila][col-1].equals(tablero[fila+1][col]))) {
+            tipoDeSimplificacion = TipoDeSimplificacion.C_1;
+        } else if(((col+1<MAX_COLUMNAS) && (fila+1<MAX_FILAS)) && ((tablero[fila][col].equals(tablero[fila][col+1])) &&
+                (tablero[fila][col+1].equals(tablero[fila+1][col])))) {
+            tipoDeSimplificacion = TipoDeSimplificacion.B_1;
+        } else if(((col+1<MAX_COLUMNAS) && (col-1>=0)) && ((tablero[fila][col].equals(tablero[fila][col+1])) &&
+                (tablero[fila][col+1].equals(tablero[fila][col-1])))) {
+            tipoDeSimplificacion = TipoDeSimplificacion.B_2;
+        } else if(((col-1>=0) && (fila+1<MAX_FILAS)) && ((tablero[fila][col].equals(tablero[fila][col-1])) &&
+                (tablero[fila][col-1].equals(tablero[fila+1][col])))) {
+            tipoDeSimplificacion = TipoDeSimplificacion.B_3;
+        } else if(((col-1>=0) && (fila-1>=0)) && ((tablero[fila][col].equals(tablero[fila][col-1])) &&
+                (tablero[fila][col-1].equals(tablero[fila-1][col])))) {
+            tipoDeSimplificacion = TipoDeSimplificacion.B_4;
+        } else if(((fila-1>=0) && (col+1<MAX_COLUMNAS)) && ((tablero[fila][col].equals(tablero[fila-1][col])) &&
+                (tablero[fila-1][col].equals(tablero[fila][col+1])))) {
+            tipoDeSimplificacion = TipoDeSimplificacion.B_5;
+        } else if((col+1<MAX_COLUMNAS) && (tablero[fila][col].equals(tablero[fila][col+1]))) {
+            tipoDeSimplificacion = TipoDeSimplificacion.A_1;
+        } else if((fila+1<MAX_FILAS) && (tablero[fila][col].equals(tablero[fila+1][col]))){
+            tipoDeSimplificacion = TipoDeSimplificacion.A_2;
+        }
+        return tipoDeSimplificacion;
+    }
+
+    public void bajarElementos(int col){
+        for(int i=MAX_FILAS-1; i>0; i--){
+            if(tablero[i][col].equals(" ") && !tablero[i-1][col].equals(" ")  ){
+                for (int j = i; j >=0 ; j--) {
+                    if(j==0){
+                        tablero[j][col] = " ";
+                    }else {
+                        tablero[j][col] = tablero[j-1][col];
+                    }
+
+                }
+            }
+        }
+    }
+
+    private int formulaExponente(String valor, int exponente){
+        int n = Integer.parseInt(valor);
+        for(int i=1; i<=exponente;i++){
+            n +=n;
+        }
+        return n;
+    }
+
+    public TipoDeSimplificacion simplificar(int fila, int col){
+
+        if(tablero[fila][col].equals(" ")){
+            return TipoDeSimplificacion.NONE;
+        }
+
+        TipoDeSimplificacion sePuede = tipoSimplificacion(fila, col);
+
+//        System.out.println(sePuede);
+        System.out.println("Fila = " + fila + " col = " + col);
+        if(sePuede.equals(TipoDeSimplificacion.C_1)){
+            int n = formulaExponente(tablero[fila][col], 3);
+            tablero[fila+1][col] = n+"";
+            tablero[fila][col] = " ";
+            tablero[fila][col-1] = " ";
+            tablero[fila][col+1] = " ";
+            bajarElementos(col);
+            bajarElementos(col-1);
+            bajarElementos(col+1);
+        } else if (sePuede.equals(TipoDeSimplificacion.B_1)){
+            int n = formulaExponente(tablero[fila][col], 2);
+            tablero[fila+1][col] = n+"";
+            tablero[fila][col] = " ";
+            tablero[fila][col+1] = " ";
+
+            bajarElementos(col);
+            bajarElementos(col+1);
+        } else if (sePuede.equals(TipoDeSimplificacion.B_2)){
+            int n = formulaExponente(tablero[fila][col], 2);
+            tablero[fila][col] = n+"";
+            tablero[fila][col-1] = " ";
+            tablero[fila][col+1] = " ";
+
+            bajarElementos(col-1);
+            bajarElementos(col+1);
+        }else if (sePuede.equals(TipoDeSimplificacion.B_3)){
+            int n = formulaExponente(tablero[fila][col], 2);
+            tablero[fila+1][col] = n+"";
+            tablero[fila][col] = " ";
+            tablero[fila][col-1] = " ";
+            bajarElementos(col);
+            bajarElementos(col-1);
+
+        } else if (sePuede.equals(TipoDeSimplificacion.B_4)){
+            int n = formulaExponente(tablero[fila][col], 2);
+            tablero[fila][col] = n+"";
+            tablero[fila][col-1] = " ";
+            tablero[fila-1][col] = " ";
+            bajarElementos(col);
+            bajarElementos(col-1);
+
+        } else if (sePuede.equals(TipoDeSimplificacion.B_5)){
+            int n = formulaExponente(tablero[fila][col], 2);
+            tablero[fila][col] = n+"";
+            tablero[fila][col+1] = " ";
+            tablero[fila-1][col] = " ";
+            bajarElementos(col);
+            bajarElementos(col+1);
+
+        } else if (sePuede.equals(TipoDeSimplificacion.A_1)){
+            int n = formulaExponente(tablero[fila][col], 1);
+            tablero[fila][col+1] = n+"";
+            tablero[fila][col] = " ";
+            bajarElementos(col);
+
+        } else if (sePuede.equals(TipoDeSimplificacion.A_2)){
+            int n = formulaExponente(tablero[fila][col], 1);
+            tablero[fila+1][col] = n+"";
+            tablero[fila][col] = " ";
+            bajarElementos(col);
+        }
+        // sino ver lo que se pueda
+        if(gano()) {
+            estado = EstadoJuego.ganado;
+        }
+        return sePuede;
+    }
+
 
     public EstadoJuego aniadirColumna(int col) throws ColumnaInvalidaException, SinEspacioColumnaException {
-
+        estado = EstadoJuego.enJuego;
         if ((col< 0) || (col >=MAX_COLUMNAS)) {
             throw new ColumnaInvalidaException();
         }
 
         int indiceFilaColumna = indicefilaDeUnaColumna(col);
-        System.out.println("indice inicio ="+indiceFilaColumna);
         if(indiceFilaColumna == -1){
             if(Integer.parseInt(tablero[0][col]) != sig){
                 if(!estaDisponibleAlgunaColumna()) {
+                    estado = EstadoJuego.perdido;
                     return EstadoJuego.perdido;
                 }
                 throw new SinEspacioColumnaException();
             }
         }
 
-        // primero simplificar todo en vertical
+        // verificar si podemos ingresar en la cabeza cuando este lleno
 
-        if(indiceFilaColumna == MAX_FILAS-1){
-            System.out.println("Sig "+sig);
-            System.out.println("indicefilaColimna= "+indiceFilaColumna);
+//        if(indiceFilaColumna == MAX_FILAS-1){
+//            System.out.println(indiceFilaColumna);
+//            tablero[indiceFilaColumna][col] = sig+"";
+//            sig = subSig;
+//            subSig = generarNumero();
+//        } else {
+//            tablero[indiceFilaColumna][col] = sig+"";
+//            sig = subSig;
+//            subSig = generarNumero();
+//        }
+        tablero[indiceFilaColumna][col] = sig+"";
+        sig = subSig;
+        subSig = generarNumero();
 
-            tablero[indiceFilaColumna][col] = sig+"";
+        indiceFilaColumna = indicefilaDeUnaColumna(col);
+        if(!tipoSimplificacion(indiceFilaColumna+1, col).equals(TipoDeSimplificacion.NONE)) {
+            System.out.println("Movimiento = " + simplificar(indiceFilaColumna+1, col));
+
             sig = subSig;
             subSig = generarNumero();
-
-        } else {
-            // cambiar los elementos eliminados por ""
-            if((indiceFilaColumna == -1) && ( Integer.parseInt(tablero[indiceFilaColumna+1][col]) != Integer.parseInt(tablero[indiceFilaColumna+2][col]))) {
-                throw new SinEspacioColumnaException();
-            }
-            System.out.println("aqui = " + indiceFilaColumna);
-            tablero[indiceFilaColumna][col] = sig+"";
-            indiceFilaColumna = indicefilaDeUnaColumna(col);
-
-            while (indiceFilaColumna != MAX_FILAS-1) {
-                System.out.println("dentro while="+indiceFilaColumna);
-                int ultimoElementoColumna = Integer.parseInt(tablero[indiceFilaColumna+1][col]);
-                int penultimoElementoColumna = Integer.parseInt(tablero[indiceFilaColumna+2][col]);
-                if(penultimoElementoColumna == ultimoElementoColumna) {
-//                    ([i][j] == [i+1][j])
-//                          Eliminar  [i][j]
-//                          Sumar todo a [i+1][j]
-
-                    tablero[indiceFilaColumna+1][col] = "";
-                    tablero[indiceFilaColumna+2][col] = (penultimoElementoColumna+penultimoElementoColumna)+"";
-                    sig = subSig;
-                    subSig = generarNumero();
-                } else {
-                    break;
-                }
-                indiceFilaColumna = indicefilaDeUnaColumna(col);
-            }
         }
 
-        indiceFilaColumna = indicefilaDeUnaColumna(col)+1;
-
-        if((col-1 >= 0) && (tablero[indiceFilaColumna][col].equals(tablero[indiceFilaColumna][col-1]))){ // caso A
-            System.out.println("Ingreso caso A, 1");
-        } else if((col+1 < MAX_COLUMNAS) && (tablero[indiceFilaColumna][col].equals(tablero[indiceFilaColumna][col+1]))) {
-            System.out.println("Ingreso caso A, 2");
-            System.out.println(tablero[indiceFilaColumna][col]);
-            System.out.println(tablero[indiceFilaColumna][col+1]);
-            System.out.println("indicefilaColimna2= "+indiceFilaColumna);
-        } else if(((col-1 >= 0) && (indiceFilaColumna+1<MAX_FILAS)) && ((tablero[indiceFilaColumna][col].equals(tablero[indiceFilaColumna][col-1]))
-                && (tablero[indiceFilaColumna][col-1].equals(tablero[indiceFilaColumna+1][col])))){  // caso B
-            System.out.println("Ingreso caso B, 1");
-        } else if(((col+1 < MAX_COLUMNAS) && (indiceFilaColumna+1<MAX_FILAS)) && ((tablero[indiceFilaColumna][col].equals(tablero[indiceFilaColumna][col+1]))
-                && (tablero[indiceFilaColumna][col+1].equals(tablero[indiceFilaColumna+1][col])))){
-            System.out.println("Ingreso caso B, 2");
-        } else if(((col+1 < MAX_COLUMNAS) && ( (col-1 >= 0) && (indiceFilaColumna+1<MAX_FILAS))) && (((tablero[indiceFilaColumna][col].equals(tablero[indiceFilaColumna][col+1]))
-                && (tablero[indiceFilaColumna][col+1].equals(tablero[indiceFilaColumna][col-1])))
-                && (tablero[indiceFilaColumna][col-1].equals(tablero[indiceFilaColumna+1][col])))){ // caso C
-            System.out.println("Ingreso caso C, 1");
-        } else {
-            System.out.println("Ingreso a la columna");
-            estado = EstadoJuego.enJuego;
-        }
         return estado;
     }
 
     @Override
     public String toString() {
-        return "";
+        StringBuilder cad  = new StringBuilder();
+        for (int i = tablero.length; i >=0 ; i--) {
+            for (int j = 0; j < tablero[i].length; j++) {
+                cad.append( tablero[i][j]);
+                if(j==tablero[i].length-1) {
+                    cad.append(".");
+                } else {
+                    cad.append(";");
+                }
+            }
+        }
+        return cad.toString();
     }
 
     public int getSig(){
@@ -166,10 +300,10 @@ public class Juego {
     }
 
     public int getColumnas() {
-        return 1;
+        return MAX_COLUMNAS;
     }
 
     public int getFilas() {
-        return 1;
+        return MAX_FILAS;
     }
 }
