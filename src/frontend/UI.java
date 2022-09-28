@@ -23,9 +23,8 @@ public class UI {
             System.out.println("Ingrese la columna a donde quisiera ingresar la ficha: "+ ficha );
             int columna = teclado.nextInt();
             try {
-                EstadoJuego estadoJuego = juego.aniadirColumna(columna);
-//                imprimirEstado();
-//                System.out.println(estadoJuego);
+                juego.aniadirColumna(columna);
+
                 int[] indices = juego.indiceSimplificar();
                 while (indices[0] != -1 && indices[1] != -1) {
                     imprimirEstado();
@@ -38,7 +37,7 @@ public class UI {
                 System.out.println(e.getMessage());
             }
 
-        } while(juego.getEstado().equals(EstadoJuego.enJuego) || juego.getEstado().equals(EstadoJuego.perdido));
+        } while(juego.getEstado().equals(EstadoJuego.enJuego) );
 
         if (juego.getEstado().equals(EstadoJuego.ganado)){
             imprimirEstado();

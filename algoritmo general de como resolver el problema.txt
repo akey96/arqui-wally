@@ -3,19 +3,20 @@
 
 1.  Mostrar estado Juego
 2.  hacer
-3. 	    leer elemento columna
+3. 	    leer elemento columna =  col
 4. 	    Si no esta en el rango de las columnas
-5.  		Lanzar excepcion ColumnaInvalidaException
-6. 	    Si se verifica que no se puede ingresar mas a una columna y simplificar
-7.	    	Lanzar Excepcion SinEspacioColumnaException
-8.	    aniadir el elmento al tablero
+5.  		Lanzar excepcion ColumnaInvalidaException, e ir al paso 3
+6. 	    Si se verifica que no se puede ingresar un elemento a  una columna y simplificar
+7.	    	Lanzar Excepcion SinEspacioColumnaException, e ir al paso 3
+8.	    aniadir el elmento al tablero y simplicar en esa fila y columna
 9.	    Mientras (Se pueda simplicar tomando en cuenta cada escesario, tomando en cuenta la prioridad)
 10.	    	Simplificar
-11.	    	Setear el estado de juego, despues de cada simplificacion
+11.	    	actualizar el estado de juego, despues de cada simplificacion
 12.	    	Mostrar el estado del juego
-13. Mientras(EstadoJuego sea en juego)
-14. Si (EstadoJuego sea ganado)
-15.	    Mostrar ganaste el juego
-16. Si (Estado de juego es perdido)
-17	    Mostrar perdiste el juego
+13          actualizar estado del juego a Perdio, Gano o enJuego
+14. Mientras(EstadoJuego sea enjuego)
+15. Si (EstadoJuego sea ganado)
+16.	    Mostrar ganaste el juego
+17. Si (Estado de juego es perdido)
+18	    Mostrar perdiste el juego
 	

@@ -1,6 +1,7 @@
 import backend.Juego;
 
 import backend.TipoDeSimplificacion;
+import frontend.UI;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
@@ -36,8 +37,7 @@ public class TestJuego {
         assertEquals(juego.estadoTablero()[0][0], " ");
         assertEquals(juego.estadoTablero()[0][1], " ");
         assertEquals(juego.estadoTablero()[0][2], " ");
-        assertNotEquals(juego.estadoTablero()[1][1], " ");
-
+        assertEquals(juego.estadoTablero()[2][1], "128");
 //        UI ui = new UI(juego);
 //        ui.imprimirTablero();
     }
@@ -47,7 +47,7 @@ public class TestJuego {
         assertEquals(juego.simplificar(0, 3), TipoDeSimplificacion.B_1);
         assertEquals(juego.estadoTablero()[0][3], " ");
         assertEquals(juego.estadoTablero()[0][4], " ");
-        assertNotEquals(juego.estadoTablero()[1][3], " ");
+        assertEquals(juego.estadoTablero()[1][3], "128");
 //        UI ui = new UI(juego);
 //        ui.imprimirTablero();
     }
@@ -57,7 +57,7 @@ public class TestJuego {
         assertEquals(juego.simplificar(0, 1), TipoDeSimplificacion.B_2);
         assertEquals(juego.estadoTablero()[0][0], " ");
         assertEquals(juego.estadoTablero()[0][2], " ");
-        assertNotEquals(juego.estadoTablero()[0][1], " ");
+        assertEquals(juego.estadoTablero()[0][1], "32");
 //        UI ui = new UI(juego);
 //        ui.imprimirTablero();
     }
@@ -67,7 +67,7 @@ public class TestJuego {
         assertEquals(juego.simplificar(2, 3), TipoDeSimplificacion.B_3);
         assertEquals(juego.estadoTablero()[0][2], " ");
         assertEquals(juego.estadoTablero()[0][3], " ");
-        assertNotEquals(juego.estadoTablero()[3][3], " ");
+        assertEquals(juego.estadoTablero()[3][3], "8");
 //        UI ui = new UI(juego);
 //        ui.imprimirTablero();
     }
@@ -77,7 +77,7 @@ public class TestJuego {
         assertEquals(juego.simplificar(4, 3), TipoDeSimplificacion.B_4);
         assertEquals(juego.estadoTablero()[0][2], " ");
         assertEquals(juego.estadoTablero()[0][3], " ");
-        assertNotEquals(juego.estadoTablero()[3][3], " ");
+        assertEquals(juego.estadoTablero()[4][3], "8");
 //        UI ui = new UI(juego);
 //        ui.imprimirTablero();
     }
@@ -87,7 +87,7 @@ public class TestJuego {
         assertEquals(juego.simplificar(5, 1), TipoDeSimplificacion.B_5);
         assertEquals(juego.estadoTablero()[0][1], " ");
         assertEquals(juego.estadoTablero()[0][2], " ");
-        assertNotEquals(juego.estadoTablero()[5][1], " ");
+        assertEquals(juego.estadoTablero()[5][1], "16");
 //        UI ui = new UI(juego);
 //        ui.imprimirTablero();
     }
@@ -96,7 +96,7 @@ public class TestJuego {
     void testSimplificarCaso_A1(){
         assertEquals(juego.simplificar(5, 3), TipoDeSimplificacion.A_1);
         assertEquals(juego.estadoTablero()[0][3], " ");
-        assertNotEquals(juego.estadoTablero()[5][4], " ");
+        assertEquals(juego.estadoTablero()[5][4], "32");
 //        UI ui = new UI(juego);
 //        ui.imprimirTablero();
     }
@@ -105,7 +105,7 @@ public class TestJuego {
     void testSimplificarCaso_A2(){
         assertEquals(juego.simplificar(4, 0), TipoDeSimplificacion.A_2);
         assertEquals(juego.estadoTablero()[0][0], " ");
-        assertNotEquals(juego.estadoTablero()[5][0], " ");
+        assertEquals(juego.estadoTablero()[5][0], "4");
 //        UI ui = new UI(juego);
 //        ui.imprimirTablero();
     }

@@ -264,6 +264,9 @@ public class Juego {
             sig = subSig;
             subSig = generarNumero();
         }
+        if(gano()) {
+            estado = EstadoJuego.ganado;
+        }
         return estado;
     }
 
