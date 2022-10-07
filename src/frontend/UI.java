@@ -2,6 +2,7 @@ package frontend;
 
 import backend.*;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class UI {
@@ -13,6 +14,7 @@ public class UI {
 
     public void jugar(){
         Scanner teclado = new Scanner(System.in);
+        imprimirRanking();
         System.out.println("Ingrese el nombre del Jugador: ");
         juego.jugadorActual = new Jugador(teclado.nextLine().trim());
         do {
@@ -63,6 +65,16 @@ public class UI {
 
     public void imprimirEstadoJugador(){
         System.out.println("Jugador:  Nick = " + juego.jugadorActual.getNick()+", Puntaje = " + juego.jugadorActual.getPuntaje());
+    }
+
+    public void imprimirRanking(){
+        System.out.println("================= Ramking ===================");
+        List<String> ranking =  juego.getRanking();
+        if(ranking.size()>0) {
+            for(int i=0; i<10; i++) {
+                System.out.println(ranking.get(i));
+            }
+        }
     }
 
     public void imprimirTablero(){

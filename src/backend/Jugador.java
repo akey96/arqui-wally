@@ -9,7 +9,7 @@ public class Jugador implements Comparable<Jugador>{
         puntaje = 0;
     }
 
-    public Jugador(String nick, int puntaje) {
+    public Juga dor(String nick, int puntaje) {
         this.nick = nick;
         this.puntaje = puntaje;
     }

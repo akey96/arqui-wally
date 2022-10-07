@@ -340,10 +340,12 @@ public class Juego {
 
     public List<String> getRanking(){
         Collections.sort(jugadores, Collections.reverseOrder() );
+        List<String> list = new ArrayList<>();
         for (Jugador j: jugadores) {
-            System.out.println(j);
+            list.add(j.toString());
+//            System.out.println(j);
         }
-        return null;
+        return list;
     }
 
     public int getPuntaje() {
