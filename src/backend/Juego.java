@@ -1,23 +1,39 @@
 package backend;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class Juego {
-
     private String[][] tablero;
     private int sig, subSig;
     public final int MAX_COLUMNAS = 5;
     public final int MAX_FILAS = 6;
     private EstadoJuego estado;
-
+    private List<Jugador> jugadores;
+    public Jugador jugadorActual;
     public Juego(){
+
         tablero = new String[MAX_FILAS][MAX_COLUMNAS];
         for (String[] strings : tablero) {
             Arrays.fill(strings, " ");
         }
         sig = generarNumero();
         subSig = generarNumero();
+
+        cargarDatos();
     }
+
+    private void cargarDatos(){
+        DatosJugadores datosJugadores = new DatosJugadores();
+        if(datosJugadores.existeCSVFile()) {
+            this.jugadores = datosJugadores.leerJugadores();
+        } else {
+            this.jugadores = new ArrayList<Jugador>();
+        }
+    }
+
 
     public Juego(String juego, int siguiente) {
         tablero = new String[MAX_FILAS][MAX_COLUMNAS];
@@ -30,6 +46,7 @@ public class Juego {
         }
         sig = siguiente;
         subSig = generarNumero();
+        cargarDatos();
     }
 
     public String[][] estadoTablero(){
@@ -171,22 +188,23 @@ public class Juego {
             bajarElementos(col);
             bajarElementos(col-1);
             bajarElementos(col+1);
+            jugadorActual.setPuntaje(jugadorActual.getPuntaje()+2);
         } else if (sePuede.equals(TipoDeSimplificacion.B_1)){
             int n = formulaExponente(tablero[fila][col], 2);
             tablero[fila+1][col] = n+"";
             tablero[fila][col] = " ";
             tablero[fila][col+1] = " ";
-
             bajarElementos(col);
             bajarElementos(col+1);
+            jugadorActual.setPuntaje(jugadorActual.getPuntaje()+2);
         } else if (sePuede.equals(TipoDeSimplificacion.B_2)){
             int n = formulaExponente(tablero[fila][col], 2);
             tablero[fila][col] = n+"";
             tablero[fila][col-1] = " ";
             tablero[fila][col+1] = " ";
-
             bajarElementos(col-1);
             bajarElementos(col+1);
+            jugadorActual.setPuntaje(jugadorActual.getPuntaje()+2);
         }else if (sePuede.equals(TipoDeSimplificacion.B_3)){
             int n = formulaExponente(tablero[fila][col], 2);
             tablero[fila+1][col] = n+"";
@@ -194,7 +212,7 @@ public class Juego {
             tablero[fila][col-1] = " ";
             bajarElementos(col);
             bajarElementos(col-1);
-
+            jugadorActual.setPuntaje(jugadorActual.getPuntaje()+2);
         } else if (sePuede.equals(TipoDeSimplificacion.B_4)){
             int n = formulaExponente(tablero[fila][col], 2);
             tablero[fila][col] = n+"";
@@ -202,7 +220,7 @@ public class Juego {
             tablero[fila-1][col] = " ";
             bajarElementos(col);
             bajarElementos(col-1);
-
+            jugadorActual.setPuntaje(jugadorActual.getPuntaje()+2);
         } else if (sePuede.equals(TipoDeSimplificacion.B_5)){
             int n = formulaExponente(tablero[fila][col], 2);
             tablero[fila][col] = n+"";
@@ -210,18 +228,19 @@ public class Juego {
             tablero[fila-1][col] = " ";
             bajarElementos(col);
             bajarElementos(col+1);
-
+            jugadorActual.setPuntaje(jugadorActual.getPuntaje()+2);
         } else if (sePuede.equals(TipoDeSimplificacion.A_1)){
             int n = formulaExponente(tablero[fila][col], 1);
             tablero[fila][col+1] = n+"";
             tablero[fila][col] = " ";
             bajarElementos(col);
-
+            jugadorActual.setPuntaje(jugadorActual.getPuntaje()+2);
         } else if (sePuede.equals(TipoDeSimplificacion.A_2)){
             int n = formulaExponente(tablero[fila][col], 1);
             tablero[fila+1][col] = n+"";
             tablero[fila][col] = " ";
             bajarElementos(col);
+            jugadorActual.setPuntaje(jugadorActual.getPuntaje()+2);
         }
         // sino ver lo que se pueda
         if(gano()) {
@@ -301,4 +320,34 @@ public class Juego {
     public int getFilas() {
         return MAX_FILAS;
     }
+
+    public void registrarJugador(String jugador){
+        String nick = jugador.trim();
+
+        if((int)(jugadores.stream().filter(x -> x.getNick().equals(nick)).count()) == 0){
+            jugadores.add(jugadorActual);
+        } else {
+            Jugador j = jugadores.stream().filter(x -> x.getNick().equals(nick)).findFirst().orElseThrow();
+            if(jugadorActual.getPuntaje() > j.getPuntaje()) {
+                jugadores.remove(j);
+                jugadores.add(jugadorActual);
+            }
+        }
+        DatosJugadores datosJugadores = new DatosJugadores();
+        datosJugadores.guardarDatosJugadores(jugadores);
+
+    }
+
+    public List<String> getRanking(){
+        Collections.sort(jugadores, Collections.reverseOrder() );
+        for (Jugador j: jugadores) {
+            System.out.println(j);
+        }
+        return null;
+    }
+
+    public int getPuntaje() {
+        return jugadorActual.getPuntaje();
+    }
+
 }

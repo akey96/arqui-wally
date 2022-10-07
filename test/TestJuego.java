@@ -1,10 +1,14 @@
+import backend.DatosJugadores;
 import backend.Juego;
 
+import backend.Jugador;
 import backend.TipoDeSimplificacion;
-import frontend.UI;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestJuego {
     static Juego juego;
@@ -109,4 +113,32 @@ public class TestJuego {
 //        UI ui = new UI(juego);
 //        ui.imprimirTablero();
     }
+
+    @Test
+    void existeJugadores(){
+        juego.registrarJugador("Alex");
+    }
+
+    @Test
+    void leerJugador(){
+        DatosJugadores d = new DatosJugadores();
+        for (Jugador j : d.leerJugadores()) {
+            System.out.println(j);
+        }
+    }
+
+    @Test
+    void guardar(){
+        DatosJugadores d = new DatosJugadores();
+        List<Jugador> j = new ArrayList<Jugador>();
+        j.add(new Jugador("eee", 2));
+        j.add(new Jugador("qqqqqqqqqqqq"));
+        d.guardarDatosJugadores(j);
+    }
+
+    @Test
+    void ranking() {
+        juego.getRanking();
+    }
+
 }

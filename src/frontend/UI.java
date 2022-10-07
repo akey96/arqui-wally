@@ -1,9 +1,6 @@
 package frontend;
 
-import backend.ColumnaInvalidaException;
-import backend.EstadoJuego;
-import backend.Juego;
-import backend.SinEspacioColumnaException;
+import backend.*;
 
 import java.util.Scanner;
 
@@ -16,7 +13,8 @@ public class UI {
 
     public void jugar(){
         Scanner teclado = new Scanner(System.in);
-
+        System.out.println("Ingrese el nombre del Jugador: ");
+        juego.jugadorActual = new Jugador(teclado.nextLine().trim());
         do {
             imprimirEstado();
             int ficha = juego.getSig();
@@ -41,16 +39,17 @@ public class UI {
 
         if (juego.getEstado().equals(EstadoJuego.ganado)){
             imprimirEstado();
+            juego.registrarJugador(juego.jugadorActual.getNick());
             System.out.println("GANO EL JUEGOOOO!!!!!");
+
 //
         } else if (juego.getEstado().equals(EstadoJuego.perdido)) {
             System.out.println("Juego terminado, ya no puedes insertar la ficha en ninguna columna!!");
         }
-
     }
 
     public void imprimirEstado(){
-
+        this.imprimirEstadoJugador();
         this.imprimirFichas();
         System.out.println("\n");
         this.imprimirTablero();
@@ -60,6 +59,10 @@ public class UI {
     public void imprimirFichas(){
         System.out.print("Fichas: ");
         System.out.print("SubSig = " + juego.getSubSig() +", Sig = "+ juego.getSig());
+    }
+
+    public void imprimirEstadoJugador(){
+        System.out.println("Jugador:  Nick = " + juego.jugadorActual.getNick()+", Puntaje = " + juego.jugadorActual.getPuntaje());
     }
 
     public void imprimirTablero(){
